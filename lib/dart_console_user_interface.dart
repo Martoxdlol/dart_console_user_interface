@@ -1,4 +1,7 @@
+import 'package:dart_console_user_interface/cursor.dart';
+
 abstract class ConsoleInterface {
+  final ConsoleInterfaceCursor cursor = ConsoleInterfaceCursor();
   void write(String text);
 }
 
