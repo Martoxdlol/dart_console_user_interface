@@ -1,5 +1,5 @@
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
-import 'package:dart_console_user_interface/elements.dart';
+import 'package:dart_console_user_interface/components.dart';
 import 'package:test/test.dart';
 
 class TestConsoleInterface extends ConsoleInterface {
