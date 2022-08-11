@@ -1,3 +1,4 @@
+import 'package:dart_console_user_interface/buildable.dart';
 import 'package:dart_console_user_interface/console_interface.dart';
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
 import 'package:dart_console_user_interface/components.dart';
@@ -31,9 +32,9 @@ void main() {
       Text("Hi,"),
       Text("How are you?"),
       Row(children: [
-        Text("Hey"),
-        Text("how"),
-        Text("are"),
+        Text("Hey "),
+        Text("how "),
+        Text("are "),
         Text("you"),
       ])
     ]));
@@ -48,4 +49,26 @@ void main() {
     expect(output.getLineAsString(5).trimRight(), "          Renderer element");
     expect(output.getLineAsString(6).trimRight(), "          Renderer element");
   });
+
+  test("Buildable", () {
+    final console = VirtualConsoleInterface();
+    final userInterface = ConsoleUserInterface(console);
+    userInterface.runApp(Column(children: [SumExpression(4, 5)]));
+    expect(console.getLineAsString(0).trimRight(), "4 + 5");
+  });
+}
+
+class SumExpression extends Buildable {
+  final int a;
+  final int b;
+  SumExpression(this.a, this.b);
+
+  @override
+  ConsoleUIComponent build() {
+    return Row(children: [
+      Text(a.toString()),
+      Text(" + "),
+      Text(b.toString()),
+    ]);
+  }
 }

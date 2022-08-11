@@ -129,7 +129,7 @@ class Row extends ChildrenRendererComponent {
   void render(ConsoleInterface console) {
     for (final child in children) {
       child.render(console);
-      console.cursor.right(4);
+      console.cursor.right(child.width);
     }
   }
 }
