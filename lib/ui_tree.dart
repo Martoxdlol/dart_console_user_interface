@@ -3,5 +3,11 @@ import 'package:dart_console_user_interface/elements.dart';
 import 'package:dart_console_user_interface/tree.dart';
 
 class UITree extends Tree {
-  UITree(ConsoleUIElement root) : super(root);
+  final ConsoleUIElement rootElement;
+
+  UITree(this.rootElement) : super(rootElement);
+
+  void render(ConsoleInterface console) {
+    rootElement.component.render(console);
+  }
 }

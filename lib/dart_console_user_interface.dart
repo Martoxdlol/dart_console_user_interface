@@ -1,6 +1,5 @@
 import 'package:dart_console_user_interface/cursor.dart';
 import 'package:dart_console_user_interface/elements.dart';
-import 'package:dart_console_user_interface/tree.dart';
 import 'package:dart_console_user_interface/ui_tree.dart';
 
 abstract class ConsoleInterface {
@@ -23,8 +22,16 @@ class ConsoleUserInterface {
 
   late UITree tree;
 
-  void render(ConsoleUIComponent element) {
-    tree = UITree(element.createElement());
-    element.render(console);
+  void attachRoot(ConsoleUIComponent component) {
+    tree = UITree(component.createElement());
+  }
+
+  void renderTree() {
+    tree.render(console);
+  }
+
+  void runApp(ConsoleUIComponent component) {
+    attachRoot(component);
+    renderTree();
   }
 }

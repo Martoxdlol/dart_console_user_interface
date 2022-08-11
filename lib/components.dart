@@ -1,9 +1,14 @@
-import 'dart:html';
-
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
-import 'package:dart_console_user_interface/tree.dart';
+import 'package:dart_console_user_interface/elements.dart';
 
-class Text extends ConsoleUIComponent {
+abstract class RendererComponent extends ConsoleUIComponent {
+  @override
+  ConsoleUIElement createElement() {
+    return RendererUIElement(this);
+  }
+}
+
+class Text extends RendererComponent {
   final String text;
   Text(this.text);
 
@@ -13,7 +18,7 @@ class Text extends ConsoleUIComponent {
   }
 }
 
-class Column extends ConsoleUIComponent {
+class Column extends RendererComponent {
   final List<ConsoleUIComponent> children;
   Column({required this.children});
 

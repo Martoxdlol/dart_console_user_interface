@@ -1,8 +1,11 @@
-import 'dart:html';
-
 abstract class TreeObject {
   TreeObject? get parent;
   List<TreeObject> get children;
+}
+
+class TreeError extends Error {
+  final String message;
+  TreeError(this.message);
 }
 
 class TreeRoot extends TreeObject {
@@ -16,7 +19,7 @@ class TreeRoot extends TreeObject {
   List<TreeObject> get children => [];
 
   void appendChild(TreeObject child) {
-    if (this.child != null) throw ErrorEvent("Only one child allowed");
+    if (this.child != null) throw TreeError("Only one child allowed");
     child = child;
   }
 }

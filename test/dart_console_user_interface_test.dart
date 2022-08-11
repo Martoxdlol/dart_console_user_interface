@@ -32,7 +32,7 @@ void main() {
   test("Hello world", () {
     final console = TestConsoleInterface();
     final userInterface = ConsoleUserInterface(console);
-    userInterface.render(Text("Hello world"));
+    userInterface.runApp(Text("Hello world"));
 
     expect(console.getLineAsString(0).trimRight(), "Hello world");
   });
@@ -40,7 +40,7 @@ void main() {
   test("Hi, ↵ How are you?", () {
     final console = TestConsoleInterface();
     final userInterface = ConsoleUserInterface(console);
-    userInterface.render(Column(children: [
+    userInterface.runApp(Column(children: [
       Text("Hi,"),
       Text("How are you?"),
     ]));
