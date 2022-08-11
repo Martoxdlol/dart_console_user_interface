@@ -1,6 +1,8 @@
+import 'package:dart_console_user_interface/buildable.dart';
 import 'package:dart_console_user_interface/components.dart';
 import 'package:dart_console_user_interface/console_interface.dart';
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
+import 'package:dart_console_user_interface/elements.dart';
 import 'package:dart_console_user_interface/event_stream.dart';
 
 void main(List<String> arguments) {
@@ -13,10 +15,11 @@ void main(List<String> arguments) {
     Text("Hi,"),
     Text("How are you?"),
     Row(children: [
-      Text("Hey"),
-      Text("how"),
-      Text("are"),
-      Text("you"),
+      Text("Hey "),
+      Text("how "),
+      Text("are "),
+      Text("you "),
+      PrintUserInterface(),
     ])
   ]));
 
@@ -25,4 +28,11 @@ void main(List<String> arguments) {
   events.emitEvent(ConsoleEvent());
 
   userInterface.tree.debugPrintTree().printToTerminal();
+}
+
+class PrintUserInterface extends StateComponent {
+  @override
+  ConsoleUIComponent build(ConsoleUIElement context) {
+    return Text(element.userInterface.toString());
+  }
 }

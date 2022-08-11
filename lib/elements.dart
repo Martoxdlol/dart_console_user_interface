@@ -10,7 +10,7 @@ import 'tree.dart';
 /// Components are extendible and directly usable for users
 /// Elements keep it's states on the tree while components are re built on ui update
 
-typedef ComponentVisitor = void Function(ConsoleUIComponent component);
+typedef ElementVisitor = void Function(ConsoleUIElement element);
 
 abstract class ConsoleUIElement implements TreeObject {
   ConsoleUIElement? _parent;
@@ -21,8 +21,14 @@ abstract class ConsoleUIElement implements TreeObject {
   final ConsoleUIComponent component;
   ConsoleUIElement(this.component);
 
+  ConsoleUserInterface get userInterface => _parent!.userInterface;
+
   void attach(ConsoleUIElement parent) {
     _parent = parent;
+  }
+
+  void render(ConsoleInterface console) {
+    component.render(console);
   }
 
   @override
@@ -50,15 +56,20 @@ class RendererUIElement extends ConsoleUIElement {
 }
 
 class ChildrenRendererUIElement extends ConsoleUIElement {
-  final List<ConsoleUIElement> _children;
-  ChildrenRendererUIElement(super.component, this._children);
+  final List<ConsoleUIElement> _children = [];
+  ChildrenRendererUIElement(super.component, List<ConsoleUIElement> children) {
+    for (final child in children) {
+      child.attach(this);
+      _children.add(child);
+    }
+  }
 
   @override
   List<TreeObject> get children => _children;
 
-  void visitChildren(ComponentVisitor visitor) {
+  void visitChildren(ElementVisitor visitor) {
     for (final element in _children) {
-      visitor(element.component);
+      visitor(element);
     }
   }
 
@@ -67,6 +78,7 @@ class ChildrenRendererUIElement extends ConsoleUIElement {
   }
 
   void appendChild(ConsoleUIElement child) {
+    child.attach(this);
     _children.add(child);
   }
 

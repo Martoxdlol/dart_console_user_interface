@@ -1,5 +1,6 @@
 import 'package:dart_console_user_interface/console_interface.dart';
 import 'package:dart_console_user_interface/elements.dart';
+import 'package:dart_console_user_interface/tree.dart';
 import 'package:dart_console_user_interface/ui_tree.dart';
 
 abstract class ConsoleUIComponent {
@@ -16,6 +17,34 @@ abstract class ConsoleUIComponent {
   int get boundariesWidth;
 }
 
+class UITreeRoot extends ConsoleUIElement {
+  ConsoleUIElement child;
+
+  @override
+  ConsoleUserInterface userInterface;
+  UITreeRoot(this.child, this.userInterface) : super(child.component) {
+    child.attach(this);
+  }
+
+  @override
+  ConsoleUIElement? get parent => null;
+
+  @override
+  List<TreeObject> get children => [];
+
+  @override
+  void debugPrintTree(ConsoleInterface console) {
+    console.write("Tree root");
+    console.cursor.right(2);
+    console.cursor.down();
+    final child = this.child;
+    child.debugPrintTree(console);
+  }
+
+  @override
+  String get objectName => "Root";
+}
+
 class ConsoleUserInterface {
   final ConsoleInterface console;
   ConsoleUserInterface(this.console);
@@ -23,7 +52,8 @@ class ConsoleUserInterface {
   late UITree tree;
 
   void attachRoot(ConsoleUIComponent component) {
-    tree = UITree(component.createElement());
+    final root = UITreeRoot(component.createElement(), this);
+    tree = UITree(root);
   }
 
   void renderTree() {
