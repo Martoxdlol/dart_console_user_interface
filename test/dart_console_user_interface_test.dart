@@ -1,36 +1,11 @@
+import 'package:dart_console_user_interface/console_interface.dart';
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
 import 'package:dart_console_user_interface/components.dart';
 import 'package:test/test.dart';
 
-class TestConsoleInterface extends ConsoleInterface {
-  final List<List<int>> lines = [];
-
-  TestConsoleInterface() {
-    for (int i = 0; i < 10; i++) {
-      lines.add(List.from("                              ".codeUnits));
-    }
-  }
-
-  String getLineAsString(int index) {
-    return String.fromCharCodes(lines[index]);
-  }
-
-  void writeIntoLine(String text, [int line = 0, int offset = 0]) {
-    final chars = text.codeUnits;
-    for (int i = 0; i < chars.length; i++) {
-      lines[line][i] = chars[i];
-    }
-  }
-
-  @override
-  void write(String text) {
-    writeIntoLine(text, cursor.state.row, cursor.state.column);
-  }
-}
-
 void main() {
   test("Hello world", () {
-    final console = TestConsoleInterface();
+    final console = VirtualConsoleInterface();
     final userInterface = ConsoleUserInterface(console);
     userInterface.runApp(Text("Hello world"));
 
@@ -38,7 +13,7 @@ void main() {
   });
 
   test("Hi, ↵ How are you?", () {
-    final console = TestConsoleInterface();
+    final console = VirtualConsoleInterface();
     final userInterface = ConsoleUserInterface(console);
     userInterface.runApp(Column(children: [
       Text("Hi,"),
@@ -47,5 +22,30 @@ void main() {
 
     expect(console.getLineAsString(0).trimRight(), "Hi,");
     expect(console.getLineAsString(1).trimRight(), "How are you?");
+  });
+
+  test("Tree test", () {
+    final console = VirtualConsoleInterface();
+    final userInterface = ConsoleUserInterface(console);
+    userInterface.runApp(Column(children: [
+      Text("Hi,"),
+      Text("How are you?"),
+      Row(children: [
+        Text("Hey"),
+        Text("how"),
+        Text("are"),
+        Text("you"),
+      ])
+    ]));
+
+    final output = userInterface.tree.debugPrintTree();
+
+    expect(output.getLineAsString(0).trimRight(), "Tree root");
+    expect(output.getLineAsString(1).trimRight(), "  Children element");
+    expect(output.getLineAsString(2).trimRight(), "      Renderer element");
+    expect(output.getLineAsString(3).trimRight(), "      Renderer element");
+    expect(output.getLineAsString(4).trimRight(), "      Children element");
+    expect(output.getLineAsString(5).trimRight(), "          Renderer element");
+    expect(output.getLineAsString(6).trimRight(), "          Renderer element");
   });
 }

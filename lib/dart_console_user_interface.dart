@@ -1,19 +1,19 @@
-import 'package:dart_console_user_interface/cursor.dart';
+import 'package:dart_console_user_interface/console_interface.dart';
 import 'package:dart_console_user_interface/elements.dart';
 import 'package:dart_console_user_interface/ui_tree.dart';
-
-abstract class ConsoleInterface {
-  final ConsoleInterfaceCursor cursor = ConsoleInterfaceCursor();
-  void write(String text);
-}
-
-class STDTerminalInterface extends ConsoleInterface {
-  void write(String text) {}
-}
 
 abstract class ConsoleUIComponent {
   void render(ConsoleInterface console);
   ConsoleUIElement createElement();
+
+  int get width;
+  int get height;
+
+  int get boundariesOffsetTop;
+  int get boundariesOffsetLeft;
+
+  int get boundariesHeight;
+  int get boundariesWidth;
 }
 
 class ConsoleUserInterface {

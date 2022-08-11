@@ -37,4 +37,12 @@ class ConsoleInterfaceCursor {
   void left([int amount = 1]) {
     add(0, -amount);
   }
+
+  void setState(ConsoleInterfaceCursorState state) {
+    _state = state;
+  }
+
+  void setPosition(int row, int column) {
+    _state = ConsoleInterfaceCursorState(row: row, column: column);
+  }
 }
