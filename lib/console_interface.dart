@@ -13,9 +13,15 @@ class VirtualConsoleInterface extends ConsoleInterface {
   final List<List<int>> lines = [];
 
   VirtualConsoleInterface() {
+    reset();
+  }
+
+  void reset() {
+    lines.clear();
+    cursor.setPosition(0, 0);
     for (int i = 0; i < 20; i++) {
       lines.add(List.from(
-          "                                                            "
+          "                                                                                                                        "
               .codeUnits));
     }
   }

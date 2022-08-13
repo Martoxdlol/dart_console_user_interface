@@ -49,7 +49,7 @@ class Element extends Tree implements BuildContext {
       _previosChildren[child]!.build();
     } else {
       final elem = child.createElement();
-      elem.attachTo(parent);
+      elem.attachTo(this);
       _children.add(elem);
     }
   }

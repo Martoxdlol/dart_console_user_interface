@@ -12,9 +12,15 @@ abstract class Component {
 }
 
 abstract class RendererComponent extends Component {
+  late LayoutBoundaries parentLayoutBoundaries;
+
+  void build(Element element) {
+    parentLayoutBoundaries = element.parent.layoutBoundaries;
+  }
+
   @override
   void buildChildren(BuildContext context) {
-    // Do nothing
+    build(context as Element);
   }
 
   @override
@@ -32,20 +38,18 @@ abstract class ChildrenRendererComponent extends RendererComponent {
 
   @override
   void buildChildren(BuildContext context) {
+    super.buildChildren(context);
     for (final child in children) {
       context.addChild(child);
     }
   }
 
   @override
-  LayoutBoundaries get layoutBoundaries => throw UnimplementedError();
-
-  @override
   void render(ConsoleInterface console, Element element);
 }
 
 abstract class BuildableComponent extends Component {
-  late final Component _built;
+  late Component _built;
 
   Component build(BuildContext context);
 

@@ -51,6 +51,7 @@ class ConsoleUserInterface {
     elem.build();
     elem.debugPrintTree(console);
     console.printToTerminal();
+    console.reset();
     elem.render(console);
     console.printToTerminal();
   }
