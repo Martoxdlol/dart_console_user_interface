@@ -13,12 +13,14 @@ class VirtualConsoleInterface extends ConsoleInterface {
   final List<List<int>> lines = [];
 
   VirtualConsoleInterface() {
-    for (int i = 0; i < 10; i++) {
-      lines.add(List.from("                              ".codeUnits));
+    for (int i = 0; i < 20; i++) {
+      lines.add(List.from(
+          "                                                            "
+              .codeUnits));
     }
   }
 
-  String getLineAsString(int index) {
+  String line(int index) {
     return String.fromCharCodes(lines[index]);
   }
 
@@ -35,8 +37,11 @@ class VirtualConsoleInterface extends ConsoleInterface {
   }
 
   void printToTerminal() {
+    String str = "";
     for (final line in lines) {
-      print(String.fromCharCodes(line));
+      str += '${String.fromCharCodes(line)}\n';
     }
+
+    print(str.trimRight());
   }
 }

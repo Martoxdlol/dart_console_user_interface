@@ -1,67 +1,57 @@
+import 'package:dart_console_user_interface/boundaries.dart';
+import 'package:dart_console_user_interface/build_context.dart';
+import 'package:dart_console_user_interface/component.dart';
 import 'package:dart_console_user_interface/console_interface.dart';
-import 'package:dart_console_user_interface/elements.dart';
-import 'package:dart_console_user_interface/tree.dart';
-import 'package:dart_console_user_interface/ui_tree.dart';
+import 'package:dart_console_user_interface/element.dart';
 
-abstract class ConsoleUIComponent {
-  void render(ConsoleInterface console);
-  ConsoleUIElement createElement();
+class Screen extends Element {
+  Screen(super.component);
 
-  int get width;
-  int get height;
-
-  int get boundariesOffsetTop;
-  int get boundariesOffsetLeft;
-
-  int get boundariesHeight;
-  int get boundariesWidth;
+  @override
+  LayoutBoundaries get layoutBoundaries => component.layoutBoundaries;
 }
 
-class UITreeRoot extends ConsoleUIElement {
-  ConsoleUIElement child;
+class ScreenComponent extends BuildableComponent {
+  Component child;
+  ScreenComponent({required this.child});
 
   @override
-  ConsoleUserInterface userInterface;
-  UITreeRoot(this.child, this.userInterface) : super(child.component) {
-    child.attach(this);
+  Element createElement() {
+    return Screen(this);
   }
 
   @override
-  ConsoleUIElement? get parent => null;
-
-  @override
-  List<TreeObject> get children => [];
-
-  @override
-  void debugPrintTree(ConsoleInterface console) {
-    console.write("Tree root");
-    console.cursor.right(2);
-    console.cursor.down();
-    final child = this.child;
-    child.debugPrintTree(console);
+  Component build(BuildContext context) {
+    return child;
   }
 
   @override
-  String get objectName => "Root";
+  LayoutBoundaries get layoutBoundaries => LayoutBoundaries(
+      DimensionalBoundaries(0, 0), DimensionalBoundaries(30, 10));
+
+  @override
+  DimensionalBoundaries get size => DimensionalBoundaries(30, 10);
 }
 
 class ConsoleUserInterface {
   final ConsoleInterface console;
   ConsoleUserInterface(this.console);
 
-  late UITree tree;
+  late Element root;
 
-  void attachRoot(ConsoleUIComponent component) {
-    final root = UITreeRoot(component.createElement(), this);
-    tree = UITree(root);
+  void runApp(Component component) {
+    root = ScreenComponent(child: component).createElement();
+    root.build();
+    root.render(console);
   }
 
-  void renderTree() {
-    tree.render(console);
-  }
-
-  void runApp(ConsoleUIComponent component) {
-    attachRoot(component);
-    renderTree();
+  void runAppDebug(Component component) {
+    final console = VirtualConsoleInterface();
+    final elem = ScreenComponent(child: component).createElement();
+    elem.build();
+    elem.debugPrintTree(console);
+    console.printToTerminal();
+    elem.render(console);
+    console.printToTerminal();
   }
 }
