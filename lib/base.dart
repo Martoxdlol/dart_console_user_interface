@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dart_console_user_interface/build_context.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
 import 'package:dart_console_user_interface/cursor.dart';
+import 'package:dart_console_user_interface/dart_console_user_interface.dart';
 
 abstract class Renderer {
   void render(ConsoleInterface console);
@@ -11,6 +12,7 @@ abstract class Renderer {
 
 abstract class Component {
   Component get parent;
+  ConsoleUserInterface get userInterface;
   Iterable<Component> get children;
   Dimensions get size;
   Renderer buildRenderer(BuildContext context);
@@ -48,6 +50,9 @@ abstract class ParentComponent extends Component {
   void attachTo(Component parent) {
     _parent = parent;
   }
+
+  @override
+  ConsoleUserInterface get userInterface => _parent.userInterface;
 
   @override
   Component get parent => _parent;

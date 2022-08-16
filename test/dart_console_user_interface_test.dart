@@ -3,6 +3,7 @@ import 'package:dart_console_user_interface/build_context.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
 import 'package:dart_console_user_interface/console_interfaces/virtual.dart';
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
+import 'package:dart_console_user_interface/hooks.dart/hooks.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -71,6 +72,39 @@ void main() {
     expect(out.line(4).trimRight(), "            Text");
     expect(out.line(5).trimRight(), "            Text");
   });
+
+  test("useState", () {
+    final console = VirtualConsoleInterface(60, 20);
+    final userInterface = ConsoleUserInterface(console);
+    userInterface.runApp(Column(children: [TestUseState()]));
+
+    final out = VirtualConsoleInterface(60, 20);
+    userInterface.hooks.tree.debugPrintTree(out);
+
+    out.printToTerminal();
+
+    // expect(console.line(0).trimRight(), "0");
+    // testUseStateValue.value = 1;
+    userInterface.update();
+    userInterface.update();
+    userInterface.update();
+    userInterface.update();
+
+    print("");
+
+    userInterface.hooks.tree.debugPrintTree(out);
+    out.printToTerminal();
+
+    // testUseStateValue.value = 2;
+    userInterface.update();
+
+    print("");
+
+    userInterface.hooks.tree.debugPrintTree(out);
+    out.printToTerminal();
+
+    expect(console.line(0).trimRight(), "2");
+  });
 }
 
 class SumExpression extends BuildableComponent {
@@ -84,6 +118,20 @@ class SumExpression extends BuildableComponent {
       Text(a.toString()),
       Text(" + "),
       Text(b.toString()),
+    ]);
+  }
+}
+
+late StateValue<int> testUseStateValue;
+
+class TestUseState extends BuildableComponent {
+  @override
+  Component build(BuildContext context) {
+    testUseStateValue = useState(0);
+    // final v2 = useState(DateTime.now().millisecondsSinceEpoch);
+
+    return Row(children: [
+      Text("testUseStateValue.value.toString()"),
     ]);
   }
 }
