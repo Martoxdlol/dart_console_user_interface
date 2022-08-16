@@ -1,3 +1,4 @@
+import 'package:dart_console/src/key.dart';
 import 'package:dart_console_user_interface/base.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
 
@@ -95,4 +96,7 @@ class VirtualConsoleInterface extends ConsoleInterface {
   void paint() {
     printToTerminal();
   }
+
+  @override
+  Stream<Key>? get keyStream => null;
 }

@@ -8,12 +8,16 @@ class ConsoleUserInterface {
 
   late final Component root;
 
-  void runApp(Component component) {
+  Future<void> runApp(Component component) async {
     root = component;
     component
         .buildRenderer(BuildContext(
             layoutBoundaries: LayoutBoundaries(
                 maxSize: Dimensions(console.size.width, console.size.height))))
         .render(console);
+
+    if (console.keyStream != null) {
+      await for (final key in console.keyStream!) {}
+    }
   }
 }

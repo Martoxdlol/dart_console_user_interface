@@ -1,6 +1,7 @@
 import 'package:dart_console/dart_console.dart';
 import 'package:dart_console_user_interface/base.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
+import 'package:dart_console_user_interface/console_interfaces/key_listener.dart';
 import 'package:dart_console_user_interface/console_interfaces/virtual.dart';
 import 'package:dart_console_user_interface/cursor.dart';
 
@@ -8,6 +9,8 @@ class STDTerminalInterface extends ConsoleInterface {
   final console = Console();
   late final VirtualConsoleInterface virtual;
   late VirtualConsoleInterface lastFrame;
+  @override
+  late Stream<Key>? keyStream;
 
   STDTerminalInterface() {
     console.clearScreen();
@@ -16,6 +19,7 @@ class STDTerminalInterface extends ConsoleInterface {
     virtual =
         VirtualConsoleInterface(console.windowWidth, console.windowHeight);
     lastFrame = virtual;
+    keyStream = getKeyStream(console);
   }
 
   @override
