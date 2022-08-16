@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dart_console_user_interface/build_context.dart';
-import 'package:dart_console_user_interface/console_interface.dart';
+import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
 import 'package:dart_console_user_interface/cursor.dart';
 
 abstract class Renderer {
@@ -110,11 +110,11 @@ abstract class ChildrenRendererComponent extends ParentComponent {
   @override
   void debugPrintTree(ConsoleInterface console) {
     console.write(runtimeType.toString());
-    console.cursor.add(4, 1);
+    console.cursor.add(1, 4);
     for (final child in children) {
       child.debugPrintTree(console);
     }
-    console.cursor.add(-4, 0);
+    console.cursor.add(0, -4);
   }
 }
 
@@ -234,4 +234,13 @@ abstract class BuildableComponent extends ParentComponent {
   Dimensions get size => _built.size;
 
   Component build(BuildContext context);
+
+  @override
+  void debugPrintTree(ConsoleInterface console) {
+    console.write(runtimeType.toString());
+    console.cursor.down();
+    console.cursor.right(4);
+    _built.debugPrintTree(console);
+    console.cursor.left(4);
+  }
 }

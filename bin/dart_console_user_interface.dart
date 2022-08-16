@@ -1,10 +1,10 @@
 import 'package:dart_console_user_interface/base.dart';
 import 'package:dart_console_user_interface/build_context.dart';
-import 'package:dart_console_user_interface/console_interface.dart';
+import 'package:dart_console_user_interface/console_interfaces/virtual.dart';
 import 'package:dart_console_user_interface/dart_console_user_interface.dart';
 import 'package:dart_console_user_interface/event_stream.dart';
 
-final console = VirtualConsoleInterface();
+final console = VirtualConsoleInterface(40, 40);
 
 void main(List<String> arguments) {
   final userInterface = ConsoleUserInterface(console);
@@ -34,7 +34,7 @@ void main(List<String> arguments) {
     SumExpression(5, 5)
   ]));
 
-  console.printToTerminal();
+  console.paint();
 
   events.emitEvent(ConsoleEvent());
 }
