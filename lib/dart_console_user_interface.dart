@@ -46,16 +46,29 @@ class ConsoleUserInterface {
             maxSize: Dimensions(console.size.width, console.size.height))));
 
     renderer.render(console);
+    console.paint();
+  }
+
+  Set<void Function(Key key)> keyEventListeners = {};
+
+  void addKeyEventListener(void Function(Key key) listener) {
+    keyEventListeners.add(listener);
   }
 
   Future<void> runApp(Component component) async {
     root = RootComponent(component, this);
     hooks = HooksManager(root);
 
+    console.init();
+
     update();
 
     if (console.keyStream != null) {
       await for (final key in console.keyStream!) {
+        for (final listener in keyEventListeners) {
+          listener(key);
+        }
+
         if (key.controlChar == ControlCharacter.ctrlC) {
           break;
         }

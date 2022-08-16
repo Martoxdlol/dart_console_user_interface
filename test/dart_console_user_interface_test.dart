@@ -131,7 +131,7 @@ class TestUseState extends BuildableComponent {
     // final v2 = useState(DateTime.now().millisecondsSinceEpoch);
 
     return Row(children: [
-      Text("testUseStateValue.value.toString()"),
+      Text(testUseStateValue.value.toString()),
     ]);
   }
 }

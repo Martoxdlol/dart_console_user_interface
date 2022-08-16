@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dart_console_user_interface/base.dart';
 import 'package:dart_console_user_interface/build_context.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
@@ -5,18 +7,23 @@ import 'package:dart_console_user_interface/console_interfaces/console_interface
 late HookTree hookPointer;
 
 class StateValue<T> {
-  final dynamic _value;
+  dynamic _value;
   final HookTree from;
   final int index;
 
   T get value => _value;
 
   set value(T value) {
-    // from.states[index] = StateValue<T>(_value, from, index);
+    _value = value;
     from.owner.update();
   }
 
   StateValue(this._value, this.from, this.index);
+
+  @override
+  String toString() {
+    return "$value";
+  }
 }
 
 class HooksManager {
@@ -64,6 +71,7 @@ class HookTree {
   HookTree(this.owner);
 
   HookTree child(HookComponent owner) {
+    stateIndex = 0;
     late HookTree child;
     if (childIndex < children.length) {
       child = children[childIndex];
@@ -80,13 +88,18 @@ class HookTree {
   }
 
   StateValue<T> state<T>(T defaultValue) {
-    if (stateIndex < states.length) {
-      return states[stateIndex] as StateValue<T>;
-    } else {
-      final state = StateValue<T>(defaultValue, this, stateIndex);
-      states.add(state);
+    if (stateIndex == states.length) {
+      states.add(StateValue<T>(defaultValue, this, stateIndex));
+
       stateIndex++;
-      return state;
+
+      return states.last as StateValue<T>;
+    } else if (stateIndex > states.length) {
+      throw Exception("FATAL ERROR, hook state modified ilegally");
+    } else {
+      final r = states[stateIndex] as StateValue<T>;
+      stateIndex++;
+      return r;
     }
   }
 
@@ -94,32 +107,28 @@ class HookTree {
     for (int i = childIndex; i < children.length; i++) {
       children.removeLast();
     }
-    // for (int i = stateIndex; i < states.length; i++) {
-    //   states.removeLast();
-    // }
+    stateIndex = 0;
     hookPointer = hookPointer.parent;
   }
 
   void debugPrintTree(ConsoleInterface console) {
-    print(children);
-    print(states);
-    // console.write(
-    //     "Tree node (states ${states.length}, children: ${children.length})");
-    // console.cursor.down();
+    console.write(
+        "Tree node (states ${states.length}, children: ${children.length})");
+    console.cursor.down();
 
-    // // Print states
-    // console.cursor.right(2);
-    // for (final state in states) {
-    //   console.write("| ${state.value}");
-    //   console.cursor.down();
-    // }
-    // // End print states
+    // Print states
+    console.cursor.right(2);
+    for (final state in states) {
+      console.write("| ${state.value}");
+      console.cursor.down();
+    }
+    // End print states
 
-    // console.cursor.right(4);
-    // for (final child in children) {
-    //   child.debugPrintTree(console);
-    // }
-    // console.cursor.left(4);
+    console.cursor.right(4);
+    for (final child in children) {
+      child.debugPrintTree(console);
+    }
+    console.cursor.left(4);
   }
 }
 

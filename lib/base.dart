@@ -12,6 +12,7 @@ abstract class Renderer {
 
 abstract class Component {
   Component get parent;
+  void attachTo(Component parent);
   ConsoleUserInterface get userInterface;
   Iterable<Component> get children;
   Dimensions get size;
@@ -79,23 +80,37 @@ abstract class RendererComponent extends ParentComponent {
 }
 
 class Text extends RendererComponent {
-  final String text;
-  Text(this.text);
+  late final List<String> lines;
+  Text(String text) {
+    lines = text.split('\n');
+  }
   @override
   void render(ConsoleInterface console, BuildContext context) {
     final maxWidth = context.layoutBoundaries.maxSize.width;
     if (maxWidth <= 0) return;
-    console.write(text.substring(0, min(maxWidth, text.length)));
+    for (final line in lines) {
+      console.write(line.substring(0, min(maxWidth, line.length)));
+      console.cursor.down();
+    }
   }
 
   @override
-  Dimensions get size => Dimensions(text.length, 1);
+  Dimensions get size => Dimensions(
+      lines.fold(
+          0,
+          (previousValue, element) =>
+              previousValue < element.length ? element.length : previousValue),
+      lines.length);
 }
 
 abstract class ChildrenRendererComponent extends ParentComponent {
   @override
   final List<Component> children;
-  ChildrenRendererComponent({required this.children});
+  ChildrenRendererComponent({required this.children}) {
+    for (final child in children) {
+      child.attachTo(this);
+    }
+  }
 
   @override
   Renderer buildRenderer(BuildContext context) {
@@ -229,6 +244,7 @@ abstract class BuildableComponent extends ParentComponent {
   @override
   Renderer buildRenderer(BuildContext context) {
     _built = build(context);
+    _built.attachTo(this);
     return _built.buildRenderer(context);
   }
 

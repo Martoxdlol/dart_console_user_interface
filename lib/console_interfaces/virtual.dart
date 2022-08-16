@@ -1,6 +1,8 @@
-import 'package:dart_console/src/key.dart';
+import 'package:dart_console/dart_console.dart';
 import 'package:dart_console_user_interface/base.dart';
 import 'package:dart_console_user_interface/console_interfaces/console_interface.dart';
+import 'package:dart_console_user_interface/console_interfaces/key_listener.dart';
+import 'package:dart_console_user_interface/cursor.dart';
 
 class VirtualConsoleInterface extends ConsoleInterface {
   final List<List<int>> lines = [];
@@ -12,7 +14,13 @@ class VirtualConsoleInterface extends ConsoleInterface {
     reset();
   }
 
+  @override
+  void init() {
+    reset();
+  }
+
   void reset() {
+    cursor.setState(ConsoleInterfaceCursorState(row: 0, column: 0));
     lines.clear();
     for (int i = 0; i < _height; i++) {
       lines.add(List.filled(_width, " ".codeUnitAt(0)));
@@ -95,8 +103,18 @@ class VirtualConsoleInterface extends ConsoleInterface {
   @override
   void paint() {
     printToTerminal();
+    reset();
   }
 
   @override
   Stream<Key>? get keyStream => null;
+}
+
+class VirtualConsoleInterfaceWithKeyStream extends VirtualConsoleInterface {
+  @override
+  Stream<Key>? keyStream;
+
+  VirtualConsoleInterfaceWithKeyStream(super.width, super.height) {
+    keyStream = getKeyStream(Console());
+  }
 }

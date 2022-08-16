@@ -13,13 +13,17 @@ class STDTerminalInterface extends ConsoleInterface {
   late Stream<Key>? keyStream;
 
   STDTerminalInterface() {
-    console.clearScreen();
-    console.cursorPosition = Coordinate(0, 0);
-    console.hideCursor();
     virtual =
         VirtualConsoleInterface(console.windowWidth, console.windowHeight);
     lastFrame = virtual;
     keyStream = getKeyStream(console);
+  }
+
+  @override
+  void init() {
+    console.cursorPosition = Coordinate(0, 0);
+    console.hideCursor();
+    console.clearScreen();
   }
 
   @override
@@ -35,13 +39,19 @@ class STDTerminalInterface extends ConsoleInterface {
 
   @override
   void paint() {
-    final newFrame = virtual.diff(lastFrame);
-    console.cursorPosition = Coordinate(0, 0);
-    for (final line in newFrame.lines) {
-      console.write(String.fromCharCodes(line));
+    for (int i = 0; i < size.height; i++) {
+      console.cursorPosition = Coordinate(i, 0);
+      console.write(virtual.line(i));
     }
-    console.cursorPosition = Coordinate(size.height - 1, 0);
-    lastFrame = virtual.clone();
     virtual.reset();
+    // final newFrame = virtual.diff(lastFrame);
+    // console.cursorPosition = Coordinate(0, 0);
+    // for (final line in newFrame.lines) {
+    //   console.write(String.fromCharCodes(line));
+    //   console.cursorDown();
+    // }
+    // console.cursorPosition = Coordinate(size.height - 1, 0);
+    // lastFrame = virtual.clone();
+    // virtual.reset();
   }
 }
